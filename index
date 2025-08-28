@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Meine Game-Liste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #181926;
+      color: #e0e5ef;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #6c63ff;
+      margin-bottom: 20px;
+    }
+    /* Formular */
+    .add-game-form {
+      background: #23243a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+    .add-game-form input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #181926;
+      color: #e0e5ef;
+      font-size: 1em;
+      width: 220px;
+      outline: none;
+    }
+    .add-game-form button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      background: #6c63ff;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-game-form button:hover {
+      background: #554be2;
+    }
+    /* Spieleliste */
+    .game-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+    }
+    .game-card {
+      background: #23243a;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 160px;
+    }
+    .game-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(60,80,255,0.15);
+    }
+    .game-card h2 {
+      font-size: 1.1em;
+      margin: 0 0 12px 0;
+      color: #6c63ff;
+      word-break: break-word;
+    }
+    .game-card a {
+      color: #6c63ff;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .game-card a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 10px; }
+      .game-list { grid-template-columns: 1fr; gap: 15px; }
+      .add-game-form input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Meine Spieleliste</h1>
+    <!-- Formular zum Hinzufügen -->
+    <form class="add-game-form" id="addGameForm" autocomplete="off">
+      <input type="text" id="gameName" placeholder="Spielname" required>
+      <input type="url" id="gameLink" placeholder="Spiel-Link (https://...)" required>
+      <button type="submit">Spiel hinzufügen</button>
+    </form>
+
+    <!-- Spieleliste -->
+    <div id="gameList" class="game-list"></div>
+  </div>
+
+  <script>
+    // Beispiel-Spiele
+    let games = [
+      { name: "Fortnite", link: "https://www.fortnite.com/" },
+      { name: "Minecraft", link: "https://www.minecraft.net/" },
+      { name: "Among Us", link: "https://innersloth.com/gameAmongUs.php" }
+    ];
+
+    // Spiele aus LocalStorage laden
+    if(localStorage.getItem('myGames')) {
+      games = JSON.parse(localStorage.getItem('myGames'));
+    }
+
+    // Spiele anzeigen
+    function renderGames() {
+      const list = document.getElementById('gameList');
+      list.innerHTML = '';
+      games.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerHTML = `
+          <h2>${game.name}</h2>
+          <a href="${game.link}" target="_blank">Zum Spiel</a>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    renderGames();
+
+    // Neues Spiel hinzufügen
+    document.getElementById('addGameForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('gameName').value.trim();
+      const link = document.getElementById('gameLink').value.trim();
+      if(name && link) {
+        games.push({ name, link });
+        localStorage.setItem('myGames', JSON.stringify(games));
+        renderGames();
+        this.reset();
+      }
+    });
+  </script>
+</body>
+</html>
